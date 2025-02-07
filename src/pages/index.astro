@@ -1,11 +1,11 @@
 ---
-import "../styles/global.css";
+import '../styles/global.css';
 import tutoringTimes from '../data/tutoringTimes.json';
 
-// Define the weekdays to show (Monday through Friday)
+// Define the weekdays
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-// Group events by day.
+// Group events by day (assumes the day is the first part of the "time" string)
 const eventsByDay = {
   Monday: [],
   Tuesday: [],
@@ -15,7 +15,7 @@ const eventsByDay = {
 };
 
 tutoringTimes.forEach((session) => {
-  // Extract the day from the session time string (assumes format "Day, time-range")
+  // Extract day (e.g., "Monday") from "Monday, 10:00 AM - 12:00 PM"
   const day = session.time.split(',')[0].trim();
   if (eventsByDay[day]) {
     eventsByDay[day].push(session);
@@ -27,19 +27,52 @@ tutoringTimes.forEach((session) => {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <title>Joel's Tutoring Calendar</title>
   </head>
   <body class="bg-gray-100">
-    <!-- Full-height container centered both vertically and horizontally -->
-    <div class="min-h-screen flex flex-col items-center justify-center px-4">
+    <!-- MOBILE VERSION: Visible only on small screens -->
+    <div class="min-h-screen mt-12 flex flex-col items-center justify-center px-4 md:hidden">
       <!-- Page Title -->
-      <h1 class="text-4xl font-bold mb-8">Joel's Tutoring Calendar</h1>
+      <h1 class="text-4xl font-bold mb-8 text-center">
+        Joel's Tutoring Calendar
+      </h1>
+      <div class="w-full max-w-6xl space-y-4">
+        {daysOfWeek.map((day) => (
+          <div key={day} class="bg-white shadow-lg rounded overflow-hidden">
+            <!-- Day Header -->
+            <div class="bg-gray-200 p-4 text-center font-semibold text-lg">
+              {day}
+            </div>
+            <!-- Day's Events -->
+            <div class="p-4 space-y-4">
+              {eventsByDay[day].length > 0 ? (
+                eventsByDay[day].map((event, index) => (
+                  <div key={index} class="bg-blue-100 border-l-4 border-blue-500 p-3 rounded shadow">
+                    <h3 class="font-bold">{event.title}</h3>
+                    <p class="text-sm text-gray-600">{event.time}</p>
+                    <p class="text-sm text-gray-600">{event.location}</p>
+                  </div>
+                ))
+              ) : (
+                <p class="text-gray-400 text-center">No events</p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
 
+    <!-- DESKTOP VERSION: Visible on medium screens and up -->
+    <div class="min-h-screen flex flex-col items-center justify-center px-4 hidden md:flex">
+      <!-- Page Title -->
+      <h1 class="text-4xl font-bold mb-8 text-center">
+        Joel's Tutoring Calendar
+      </h1>
       <!-- Calendar Card -->
       <div class="w-full max-w-6xl bg-white shadow-lg rounded overflow-hidden">
-        <!-- Calendar Header: Display weekdays -->
-        <div class="grid grid-cols-5 border-b">
+        <!-- Calendar Header -->
+        <div class="grid grid-cols-1 md:grid-cols-5 border-b">
           {daysOfWeek.map((day) => (
             <div class="p-4 text-center font-semibold text-lg" key={day}>
               {day}
@@ -47,9 +80,9 @@ tutoringTimes.forEach((session) => {
           ))}
         </div>
 
-        <!-- Calendar Body: Events organized in a 5-column grid -->
+        <!-- Calendar Body -->
         <div class="p-4">
-          <div class="grid grid-cols-5 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
             {daysOfWeek.map((day) => (
               <div key={day} class="space-y-4">
                 {eventsByDay[day].length > 0 ? (
