@@ -17,6 +17,7 @@ const eventsByDay = {
 tutoringTimes.forEach((session) => {
   // Extract day (e.g., "Monday") from "Monday, 10:00 AM - 12:00 PM"
   const day = session.time.split(',')[0].trim();
+  session.time = session.time.split(',')[1].trim();
   if (eventsByDay[day]) {
     eventsByDay[day].push(session);
   }
